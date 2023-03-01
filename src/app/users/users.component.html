@@ -2,17 +2,39 @@
     <div class="card-header">
         <ul class="nav nav-pills card-header-pills">
             <li class="nav-item">
-                <a class="nav-link" routerLink="/">Voltar</a>
+                <a class="nav-link pointer" routerLink="">Voltar</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" type="button" data-toggle="modal" data-target="#exampleModal">Novo</a>
+                <a class="nav-link pointer" data-toggle="modal" data-target="#exampleModal">Novo</a>
             </li>
         </ul>
     </div>
     <div class="card-body">
         <h5 class="card-title">Usuários</h5>
-        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">Email</th>
+              <th scope="col">Idade</th>
+              <th scope="col">Editar</th>
+              <th scope="col">Excluir</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.age }}</td>
+              <td data-toggle="modal" data-target="#exampleModal" (click)="editUser(user)">
+                <button type="button" class="btn btn-primary btn-sm">Editar</button>
+              </td>
+              <td (click)="deleteUser(user)">
+                <button type="button" class="btn btn-secondary btn-sm">Excluir</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>  
     </div>
 </div>
 
@@ -21,8 +43,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="exampleModalLabel">Criar/Editar Usuário</h5>
+        <button type="button" class="close" data-dismiss="modal" id="closeModal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -43,7 +65,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="createOrUpdate(user.id)">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="createOrUpdate(user)">Salvar</button>
       </div>
     </div>
   </div>

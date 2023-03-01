@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { UsersService } from '../services/users.service';
+import { Users } from '../models/users';
 
 @Component({
   selector: 'app-users',
@@ -8,28 +9,49 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UsersComponent implements OnInit {
 
-  constructor(private http: HttpClient) {}
+  user = {} as Users;
+  users!: Users[]; 
+
+  constructor(private userService: UsersService) {}
 
   ngOnInit(): void {
     this.getUsers()
   }
 
-  user = {
-    id: '',
-    name: '',
-    email: '',
-    age: 0
-  };
-
   getUsers() {
-    this.http.get<any>('http://localhost:3000/api/users').subscribe(data => {
-      for (let index = 0; index < data.length; index++) {
-        console.log(data[index]);
-      }
+    this.userService.users().subscribe((users: Users[]) => {
+      this.users = users;
     })
   }
 
-  createOrUpdate(id: string) {
-    console.log(this.user)
+  editUser(user: Users) {
+    this.userService.userById(user).subscribe((user: Users) => {
+      this.user = user;
+    });
   }
+
+  createOrUpdate(user: Users) {
+    if (user._id) {
+      this.userService.update(user).subscribe(() => {
+        this.user = {} as Users;
+        this.getUsers()
+        document.getElementById('closeModal')?.click()
+      })
+    } else {
+      this.userService.create(user).subscribe(() => {
+        this.user = {} as Users;
+        this.getUsers()
+        document.getElementById('closeModal')?.click()
+      })
+    }
+  }
+
+  deleteUser(user: Users) {
+    if (confirm('Deseja excluir o registro ?')) {
+      this.userService.delete(user).subscribe(() => {
+        this.getUsers();
+      })
+    }
+  }
+
 }
